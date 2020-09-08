@@ -64,12 +64,12 @@ if (!isDev && cluster.isMaster) {
 
     // Get all transfers.
 
-    app.use('/api/transfers', transferRoutes);
-    app.use('/api/teams', teamRoutes);
+    app.use('/transfers', transferRoutes);
+    app.use('/teams', teamRoutes);
 
     // Add transfers.
 
-    app.post('/api/transfer', (req, res) => {
+    app.post('/transfer', (req, res) => {
 
         const body = req.body;
 
@@ -103,7 +103,7 @@ if (!isDev && cluster.isMaster) {
 
     // Add teams.
 
-    app.post('/api/team', (req, res) => {
+    app.post('/team', (req, res) => {
 
         const body = req.body;
 
