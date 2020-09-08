@@ -1,0 +1,21 @@
+// Layout
+
+main
+
+    position: relative
+    display: flex
+
+    overflow-x: hidden
+
+    @extend %fullWidth
+    @extend %padding
+
+    // Responsive
+
+    +screen($sXL)
+
+        flex-direction: column
+
+    // Imports
+
+    @import 'layout/section'

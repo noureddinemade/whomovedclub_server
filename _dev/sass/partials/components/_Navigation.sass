@@ -1,0 +1,104 @@
+// Nav
+
+nav
+
+    $break: $sMD
+
+    display: block
+    position: relative
+
+    margin-bottom: $globalSpace / 2
+
+    background-color: $bg
+
+    // Children
+
+    ul
+
+        display: flex
+        justify-content: space-between
+        list-style: none
+
+        // Responsive
+
+        +screen($break)
+
+            // flex-direction: column
+
+        // Children
+
+        li
+
+            display: inline-block
+
+            // Children
+
+            a
+
+                // Pseudo
+
+                &:before
+
+                    display: inline-block
+
+                    padding-right: 6px
+
+                    // Responsive
+
+                    +screen($break)
+
+                        padding: 0
+
+                // Classes
+
+                &.active
+
+                    // Children
+
+                    span.label
+
+                        border-bottom: 2px solid $primary
+
+                &.disabled
+
+                    cursor: not-allowed
+
+                    opacity: .5
+
+                    +filter((grayscale, blur), (100%, 2px))
+
+                &.all:before
+
+                    content: '🌍'
+
+                    +animation(globe, 1s, linear, infinite)
+
+                &.eng:before
+
+                    content: '🏴󠁧󠁢󠁥󠁮󠁧󠁿'
+
+                &.spa:before
+
+                    content: '󠁧󠁢󠁥🇪🇸'
+
+                &.ita:before
+
+                    content: '󠁧🇮🇹'
+
+                &.ger:before
+
+                    content: '🇩🇪'
+
+                &.fra:before
+
+                    content: '🇫🇷' 
+
+                // Children
+
+                span.label
+
+                    // Responsive
+
+                    +screen($break)
+
+                        display: none

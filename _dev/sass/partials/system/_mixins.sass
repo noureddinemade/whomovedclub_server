@@ -1,0 +1,129 @@
+// Mixins
+
+// Media Query
+
+@mixin screen($size)
+
+    @media screen and (max-width: $size)
+
+        @content
+
+// Responsive Padding
+
+@mixin padding($y, $x: $y, $z: 10px, $list: 0)
+
+    padding: $y $x
+
+    $breaks: $list
+
+    @each $break in $breaks
+
+        +screen($break)
+
+            @if $y == 0
+                $y: 0
+            @else
+                $y: $y - $z
+
+            @if $x == 0
+                $x: 0
+            @else
+                $x: $x - $z
+
+            padding: $y $x
+
+// Adjust Max Width
+
+@mixin maxWidth($width)
+
+    width: $width
+    max-width: $width
+
+    +screen($width)
+
+        width: 100%
+
+// Transform
+
+@mixin transform($transformlist, $valuelist)
+
+    $transforms: ()
+
+    @each $transform in $transformlist
+
+        $i: index($transformlist, $transform)
+        $a: nth($valuelist, $i)
+        $type: $transform
+        $value: unquote('(#{$a})')
+        $data: #{$type}#{$value}
+        $transforms: append($transforms,$data)
+
+    -webkit-transform: $transforms
+    -ms-transform: $transforms
+    transform: $transforms
+
+// Animation
+
+@mixin animation($anim, $speed, $easing, $loop, $delay: 0s, $fill: none)
+
+    -webkit-animation-name: $anim
+    -webkit-animation-duration: $speed
+    -webkit-animation-timing-function: $easing
+    -webkit-animation-iteration-count: $loop
+    -webkit-animation-delay: $delay
+    -webkit-animation-fill-mode: $fill
+
+    animation-name: $anim
+    animation-duration: $speed
+    animation-timing-function: $easing
+    animation-iteration-count: $loop
+    animation-delay: $delay
+    animation-fill-mode: $fill
+
+// Transition
+
+@mixin transition($transitions, $durations, $delays: 0s, $easings: linear)
+
+    transition-property: $transitions
+    transition-duration: $durations
+    transition-delay: $delays
+    transition-timing-function: $easings
+
+// Keyframes
+
+@mixin keyframes($name)
+
+    @keyframes #{$name}
+
+        @content
+
+    @-webkit-keyframes #{$name}
+
+        @content
+
+// Filters
+
+@mixin filter($filterlist, $valuelist)
+
+    $filters: ()
+
+    @each $filter in $filterlist
+
+        $i: index($filterlist, $filter)
+        $a: nth($valuelist, $i)
+        $type: $filter
+        $value: unquote('(#{$a})')
+        $data: $type#{$value}
+        $filters: append($filters, $data)
+
+    webkit-filter: $filters
+    filter: $filters
+
+// Colours
+
+@mixin createPlayerBG($colour, $deg, $percentage)
+
+    $bg1: lighten(adjust-hue($colour, 220%), 10%)
+    $bg2: adjust-hue($bg1, 280%)
+
+    background-image: linear-gradient($deg, $bg1, $bg2 $percentage)

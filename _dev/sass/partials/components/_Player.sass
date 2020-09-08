@@ -1,0 +1,60 @@
+// Player
+
+div.player
+
+    position: relative
+    display: flex
+    align-items: center
+
+    margin-bottom: $globalSpace / 4
+
+    border: 2px solid $dark
+    box-shadow: 0px 0px 0 $primary
+
+    +padding($globalSpace / 2)
+    +transition((opacity, box-shadow), (.1s, .1s))
+
+    // Pseudo
+
+    &:before
+
+        margin-right: 20px
+
+        font-size: $fontBase + 10px
+
+        @extend %icon
+
+    // States
+
+    &:hover
+        
+        opacity: 1 !important
+
+        box-shadow: 4px 4px 0 $primary
+
+    // Children
+
+    span
+
+        // Classes
+
+        &.name
+
+            @extend %bold
+            @extend %textUpper
+
+    a
+
+        // Classes
+
+        &.to
+
+            color: $primary
+            
+            border-bottom: 2px dotted $primary
+
+        &.from
+
+            color: $tertiary
+
+            border-bottom: 2px dotted $tertiary

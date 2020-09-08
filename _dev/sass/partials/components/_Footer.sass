@@ -1,0 +1,57 @@
+// Footer
+
+footer
+
+    position: fixed
+
+    width: 30%
+
+    bottom: $globalSpace
+
+    // Responsive
+
+    +screen($sXL)
+
+        position: relative
+
+        bottom: auto
+
+        width: 100%
+
+        margin-top: $globalSpace / 2
+
+    // Children
+
+    ul
+
+        display: flex
+        justify-content: space-between
+        flex-direction: column
+
+        // Responsive
+
+        +screen($sXL)
+
+            flex-direction: row
+
+            // Children
+
+            li:last-of-type
+
+                order: -1
+
+        +screen($sXS)
+
+            flex-direction: column
+
+            // Children
+
+            li:last-of-type
+
+                order: 2
+
+        // Children
+
+        li:first-of-type
+
+            margin-bottom: $globalSpace / 4
