@@ -8,7 +8,8 @@
         "build": "cd client/ && yarn install && yarn build",
         "teams": "node actions/addTeams.js",
         "transfers": "node actions/addTransfers.js",
-        "test": "node actions/test.js"
+        "test": "node actions/test.js",
+        "allTransfers": "yarn transfers Premier League && yarn transfers La Liga && yarn transfers Serie A && yarn transfers Bundesliga && yarn transfers Ligue 1"
     },
     "cacheDirectories": [
         "node_modules",
