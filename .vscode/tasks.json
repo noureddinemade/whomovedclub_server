@@ -4,8 +4,15 @@
 		{
 			"type": "gulp",
 			"task": "default",
-			"problemMatcher": [],
 			"label": "gulp: default",
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+        },
+        {
+			"type": "npm",
+			"script": "start",
+			"label": "npm: start",
 			"runOptions": {
 				"runOn": "folderOpen"
 			}
