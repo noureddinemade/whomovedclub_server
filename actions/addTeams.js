@@ -41,15 +41,40 @@ const leagueList = {
     },
 
     ned: {
-        id: 0,
+        id: 2673,
         name: 'Eredivisie'
+    },
+
+    bra: {
+        id: 1396,
+        name: 'Brasileiro'
+    },
+
+    por: {
+        id: 2826,
+        name: 'Primeira Liga'
+    },
+
+    sco: {
+        id: 2655,
+        name: 'Scottish Premiership'
+    },
+
+    usa: {
+        id: 1264,
+        name: 'MLS'
+    },
+
+    mex: {
+        id: 2656,
+        name: 'Liga MX'
     }
 
 }
 
 //
 
-const current   = leagueList.eng;
+const current   = leagueList.mex;
 const apiURL    = process.env.API_LIVE;
 
 //
