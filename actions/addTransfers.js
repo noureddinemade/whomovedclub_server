@@ -2,12 +2,13 @@
 
 require('dotenv').config();
 
-const mongoose  = require('mongoose');
-const fetch     = require('node-fetch');
-const Team      = require('../server/models/team');
-const Transfer  = require('../server/models/transfer');
+const mongoose      = require('mongoose');
+const fetch         = require('node-fetch');
+const Team          = require('../server/models/team');
+const Transfer      = require('../server/models/transfer');
+const LastUpdated   = require('../server/models/date');
 
-const apiURL    = process.env.API_LIVE;
+const apiURL        = process.env.API_LIVE;
 
 let current;
 
@@ -247,6 +248,25 @@ const pullTransfers = async () => {
 
 }
 
+const updateDate = async () => {
+
+    LastUpdated.find({})
+
+        .then(result => {
+
+            const newDate = new Date();
+
+            LastUpdated.updateOne({ _id: result[0]._id }, { date: newDate }).then(result => {
+
+                console.log('--------------------------------');
+                console.log('🗓',' Updated date');
+    
+            });
+
+        })
+
+}
+
 // Connect to MongoDB
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -257,6 +277,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         console.log('✅', ' Connected to MongoDB');
         console.log('--------------------------------');
 
+        updateDate();
         pullTransfers();
 
     })
