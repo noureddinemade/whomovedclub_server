@@ -3,124 +3,37 @@
 require('dotenv').config();
 
 const mongoose      = require('mongoose');
-const fetch         = require('node-fetch');
+
 const Team          = require('../server/models/team');
 const Transfer      = require('../server/models/transfer');
 const LastUpdated   = require('../server/models/date');
 
+const get           = require('./functions/requests');
+const con           = require('./functions/conditions');
+
 const apiURL        = process.env.API_LIVE;
+const apiKey        = process.env.API_KEY;
 
-let current;
+const date          = new Date;
+const today         = date.getDay();
 
-process.argv.length > 3
-    ? current = `${process.argv[2]} ${process.argv[3]}`
-    : current = `${process.argv[2]}`
+//
 
-// Get transfers from teams
+let leagues;
+let total = { yes: 0, no: 0 };
 
-const getTransfers = async (id) => {
+//
 
-    const teamTransfers = await fetch(`https://${apiURL}/v2/transfers/team/${id}`, {
-        "method": "GET",
-        "headers": {
-            "x-rapidapi-host": apiURL,
-            "x-rapidapi-key": process.env.API_KEY,
-            "useQueryString": true
-        }
-    });
+today === '0' || today === '1' || today === '3' || today === '5'
+    ? leagues = ['Premier League', 'Bundesliga', 'Ligue 1', 'Serie A', 'La Liga']
+    : today === '2' ? leagues = ['Eredivisie', 'Brasileiro', 'Primeira Liga', 'MLS', 'Liga MX']
+    : today === '4' ? leagues = ['Scottish Premiership']
+    : leagues = ['Premier League', 'Bundesliga', 'Ligue 1', 'Serie A', 'La Liga']
 
-    return await teamTransfers.json();
 
-}
+// Pull transfers from API
 
-// Check dates
-
-const daysBetween = (d1, d2) => {
-
-    const result = Math.abs(d1.getTime() - d2.getTime());
-
-    return Math.floor(result / (1000 * 60 * 60 * 24));
-
-};
-
-// Check for data issues
-
-const checkData = (current) => {
-
-    if (!current.type || current.type === 'N/A' || current.player_name === 'Data not available') {
-
-        return true;
-
-    }
-
-    else if (!current.team_in.team_name || !current.team_out.team_name) {
-
-        return true;
-
-    }
-
-    else if (!current.team_in.team_id || !current.team_out.team_id) {
-
-        return true;
-
-    }
-
-    else {
-
-        return false;
-
-    }
-
-}
-
-// Check if transfer passes import requirements
-
-const doesItPass = (current, count) => {
-
-    const d1    = new Date();
-    const d2    = new Date(current.transfer_date);
-    const date  = daysBetween(d1, d2);
-    const data  = checkData(current);
-
-    if (count < 50) {
-
-        if (current.transfer_date.includes('-')) {        
-
-            if (date > 30 || date <= 0) {
-
-                return 'Not relevant';
-        
-            }
-
-            else if (data) {
-
-                return 'Incomplete data';
-
-            }
-
-            else {
-
-                return false;
-
-            }
-    
-        } else {
-
-            return 'Incorrect date format'
-
-        }
-        
-    } else {
-
-        return 'Transfer limit';
-
-    }
-
-}
-
-// Add transfers to MongoDB
-
-const pullTransfers = async () => {
+const pullTransfers = async (current) => {
 
     let teamPromise = Promise.resolve();
     let transfers   = [];
@@ -141,7 +54,7 @@ const pullTransfers = async () => {
 
                     }).then(async t => {
                         
-                        const team = await getTransfers(t.teamID);
+                        const team = await get.transfers(t.teamID, apiURL, apiKey);
 
                         if (team.api && team.api.results > 0) {
 
@@ -159,7 +72,7 @@ const pullTransfers = async () => {
                                 }).then(async p => {
 
 
-                                    let conditions = doesItPass(p, count);
+                                    let conditions = con.doesItPass(p, count);
 
                                     //
 
@@ -190,12 +103,15 @@ const pullTransfers = async () => {
                                         await Transfer.create(transfer).then(result => {
                     
                                             console.log('✔️',` Transfer added: ${p.player_name}`);
+                                            total.yes = total.yes + 1;
                                 
                                         });
                 
                                     } else {
 
                                         console.log('❌',` Transfer not eligible: ${p.player_name} (${conditions})`);
+
+                                        total.no = total.no + 1;
 
                                     }
 
@@ -214,6 +130,7 @@ const pullTransfers = async () => {
                         } else {
 
                             console.log('0️⃣',` No transfers available for ${t.name}`);
+                            console.log('--------------------------------');
 
                         }
 
@@ -225,12 +142,10 @@ const pullTransfers = async () => {
 
                     setTimeout(() => {
 
+                        console.log('⚽️',` ${transfers.length} Transfers added for ${current}`);
                         console.log('--------------------------------');
-                        console.log('⚽️',` ${transfers.length} Transfers added`);
-                        console.log('✅',' Disconnected from MongoDB');
-                        mongoose.connection.close();
 
-                    }, 5000);
+                    }, 500);
 
                 })
 
@@ -248,6 +163,8 @@ const pullTransfers = async () => {
 
 }
 
+// Update last updated date & time
+
 const updateDate = async () => {
 
     LastUpdated.find({})
@@ -258,14 +175,54 @@ const updateDate = async () => {
 
             LastUpdated.updateOne({ _id: result[0]._id }, { date: newDate }).then(result => {
 
-                console.log('--------------------------------');
                 console.log('🗓',' Updated date');
+                console.log('--------------------------------');
     
             });
 
         })
 
 }
+
+// Loop thru all leagues and pull transfers
+
+const getFromAllLeagues = (leagues) => {
+
+    let wait = 0;
+
+    leagues.map((l,i) => {
+
+        setTimeout(() => {
+
+            console.log('⌛️',` Adding Transfers in ${l}`);
+            console.log('--------------------------------');
+            setTimeout(() => pullTransfers(l), 500);
+
+        }, wait);
+
+        //
+
+        if (i === leagues.length - 1) {
+
+            setTimeout(() => {
+
+                console.log('⚽️',' Transfer sync complete');
+                console.log('✅',` ${total.yes} Transfer were added`);
+                console.log('❌',` ${total.no} Transfer were ineligible`);
+                console.log('--------------------------------');
+                console.log('🔌',' Disconnected from MongoDB');
+                mongoose.connection.close();
+
+            }, wait * 2)
+
+        }
+
+        wait = wait + 120000;
+
+    });
+
+}
+
 
 // Connect to MongoDB
 
@@ -278,7 +235,8 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         console.log('--------------------------------');
 
         updateDate();
-        pullTransfers();
+        setTimeout(() => getFromAllLeagues(leagues), 1000)
+        
 
     })
     .catch((error) => {
