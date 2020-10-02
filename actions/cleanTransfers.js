@@ -24,7 +24,7 @@ const isDuplicate = (current, players) => {
     const typeMatch             = players.filter(a => a.type === current.type);
     const teamInMatch           = players.filter(a => a.team.in.id === current.team.in.id);
     const teamOutMatch          = players.filter(a => a.team.out.id === current.team.out.id);
-    const dateMatch             = players.filter(a => new Date(a.transferDate) === new Date(current.transferDate));
+    const dateMatch             = players.filter(a => a.transferDate === current.transferDate);
 
     if (typeMatch.length > 1) {
 
@@ -44,9 +44,7 @@ const isDuplicate = (current, players) => {
 
             }
 
-        }
-        
-        else {
+        } else {
 
             return false;
 
@@ -122,11 +120,17 @@ const cleanTransfers = async () => {
 
                         else if (conditions === 'duplicate') {
 
-                            const name  = unique.filter(a => a.name === t.name);
-                            const date  = unique.filter(a => a.transferDate === t.transferDate);
-                            const type  = unique.filter(a => a.type === t.type);
+                            const name      = unique.filter(a => a.name === t.name);
+                            const date      = unique.filter(a => a.transferDate === t.transferDate);
+                            const type      = unique.filter(a => a.type === t.type);
+                            const teamIn    = unique.filter(a => a.team.in.id === t.team.in.id);
+                            const teamOut   = unique.filter(a => a.team.out.id === t.team.out.id);
 
-                            if (name.length > 0 && date.length > 0 && type.length > 0) {
+                            if (date.length > 0 && type.length > 0 && teamIn.length > 0 && teamOut.length > 0) {
+
+                                toBeRemoved.push(t);
+
+                            } else if (name.length > 0) {
 
                                 toBeRemoved.push(t);
 
