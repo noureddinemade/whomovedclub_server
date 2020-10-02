@@ -26,17 +26,23 @@ const isDuplicate = (current, players) => {
     const teamOutMatch          = players.filter(a => a.team.out.id === current.team.out.id);
     const dateMatch             = players.filter(a => new Date(a.transferDate) === new Date(current.transferDate));
 
-    if (nameMatch.length > 1 || lastLettersMatch.length > 1) {
+    if (typeMatch.length > 1) {
 
-        if (typeMatch.length > 1 && dateMatch.length > 1) {
+        if (dateMatch.length > 1) {
 
-            return true;
+            if (teamInMatch.length > 1 && teamOutMatch.length > 1) {
 
-        }
+                return true;
+    
+            } else if (nameMatch.length > 1 || lastLettersMatch.length > 1) {
 
-        else if (teamInMatch.length > 1 && teamOutMatch.length > 1) {
+                return true;
 
-            return true;
+            } else {
+
+                return false;
+
+            }
 
         }
         
