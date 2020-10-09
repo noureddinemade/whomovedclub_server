@@ -77,11 +77,16 @@ const pullTransfers = async (current) => {
                                     //
 
                                     if (!conditions) {
+
+                                        let type = p.type.replace('€ ', '');
+                                            type = type.toLowerCase();
+
+                                        let name = p.name.replace('&apos;', "'");
                 
                                         const transfer = {
 
-                                            name: p.player_name,
-                                            type: p.type,
+                                            name: name,
+                                            type: type,
                                             team: { 
                                                 in: { 
                                                     id: p.team_in.team_id,
