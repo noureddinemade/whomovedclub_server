@@ -15,7 +15,7 @@ exports.doesItPass = (current, count) => {
 
         if (current.transfer_date.includes('-')) {        
 
-            if (date > 30 || date <= 0) {
+            if (date > 14 || date <= 0) {
 
                 return 'Not relevant';
         

@@ -24,10 +24,10 @@ let total = { yes: 0, no: 0 };
 
 //
 
-today === '0' || today === '1' || today === '3' || today === '5'
+today === 0 || today === 1 || today === 3 || today === 5
     ? leagues = ['Premier League', 'Bundesliga', 'Ligue 1', 'Serie A', 'La Liga']
-    : today === '2' ? leagues = ['Eredivisie', 'Brasileiro', 'Primeira Liga', 'MLS', 'Liga MX']
-    : today === '4' ? leagues = ['Scottish Premiership']
+    : today === 2 ? leagues = ['Eredivisie', 'Brasileiro', 'Primeira Liga', 'MLS', 'Liga MX']
+    : today === 4 ? leagues = ['Scottish Premiership']
     : leagues = ['Premier League', 'Bundesliga', 'Ligue 1', 'Serie A', 'La Liga']
 
 
@@ -81,7 +81,7 @@ const pullTransfers = async (current) => {
                                         let type = p.type.replace('€ ', '');
                                             type = type.toLowerCase();
 
-                                        let name = p.name.replace('&apos;', "'");
+                                        let name = p.player_name.replace('&apos;', "'");
                 
                                         const transfer = {
 
