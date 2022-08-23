@@ -25,13 +25,8 @@
         "del": "^5.1.0",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "gulp": "^4.0.2",
-        "gulp-clean-css": "^4.3.0",
-        "gulp-sass": "^4.1.0",
-        "gulp-sourcemaps": "^2.6.5",
         "mongoose": "^5.10.1",
-        "node-fetch": "^2.6.0",
-        "node-sass": "^4.14.1"
+        "node-fetch": "^2.6.0"
     },
     "repository": {
         "type": "git",
