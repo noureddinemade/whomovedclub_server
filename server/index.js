@@ -11,7 +11,7 @@ const cors          = require('cors');
 const { resolve }   = require('path');
 
 const isDev         = process.env.NODE_ENV !== 'production';
-const PORT          = process.env.PORT || 5000;
+const PORT          = process.env.PORT || 5230;
 const url           = process.env.MONGODB_URI;
 
 const app           = express();
