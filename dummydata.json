@@ -1,0 +1,125 @@
+{
+    "response": [
+    {
+        "player": {
+            "id": 1,
+            "name": "Eligible Steve"
+        },
+        "update": "2020-08-29T04:27:48+00:00",
+        "transfers": [
+        {
+            "date": "2022-07-11",
+            "type": "Loan",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 33
+                },
+                "out": 
+                {
+                    "id": 63
+                }
+            }
+        },
+        {
+            "date": "2012-07-11",
+            "type": "TYPE",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 47
+                },
+                "out": 
+                {
+                    "id": 48
+                }
+            }
+        },
+        {
+            "date": "2020-07-11",
+            "type": "TYPE",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 42
+                },
+                "out": 
+                {
+                    "id": 45
+                }
+            }
+        }
+    ]},
+    {
+        "player": {
+            "id": 1,
+            "name": "No Luck Harry"
+        },
+        "update": "2020-08-29T04:27:48+00:00",
+        "transfers": [
+        {
+            "date": "2005-07-11",
+            "type": "TYPE",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 34
+                },
+                "out": 
+                {
+                    "id": 36
+                }
+            }
+        }
+    ]},
+    {
+        "player": {
+            "id": 1,
+            "name": "Expensive Tomson"
+        },
+        "update": "2020-08-29T04:27:48+00:00",
+        "transfers": [
+        {
+            "date": "2022-07-11",
+            "type": "€ 22.4",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 66
+                },
+                "out": 
+                {
+                    "id": 33
+                }
+            }
+        }
+    ]},
+    {
+        "player": {
+            "id": 1,
+            "name": "Current Malkovic"
+        },
+        "update": "2020-08-29T04:27:48+00:00",
+        "transfers": [
+        {
+            "date": "2022-07-11",
+            "type": "€ 8.1",
+            "teams": 
+            {
+                "in": 
+                {
+                    "id": 66
+                },
+                "out": 
+                {
+                    "id": 33
+                }
+            }
+        }
+    ]}
+]}
