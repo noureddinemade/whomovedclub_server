@@ -12,6 +12,9 @@
         "test": "node actions/test.js",
         "allTransfers": "yarn transfers Premier League && yarn transfers La Liga && yarn transfers Serie A && yarn transfers Bundesliga && yarn transfers Ligue 1"
     },
+    "engines": {
+        "node": "18.x"
+    },
     "cacheDirectories": [
         "node_modules",
         "client/node_modules"
