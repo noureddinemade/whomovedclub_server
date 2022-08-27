@@ -8,9 +8,11 @@ const teamSchema = new mongoose.Schema({
 
     teamID:         Number,
     name:           String,
+    code:           String,
     country:        String,
     league:         String,
-    logo:           String
+    logo:           String,
+    venue:          String,
 
 });
 

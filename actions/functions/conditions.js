@@ -4,26 +4,33 @@ const helper = require('./helpers.js');
 
 // Check if transfer passes import requirements
 
-exports.doesItPass = (current, count) => {
+exports.doesItPass = (p, t, count, data) => {
 
-    const d1    = new Date();
-    const d2    = new Date(current.transfer_date);
-    const date  = helper.date(d1, d2);
-    const data  = helper.check(current);
+    const dateToday         = new Date();
+    const dateTransfer      = new Date(t.date);
+    const dateCheck         = helper.date(dateToday, dateTransfer);
+    const dataCheck         = helper.check(p,t);
+    const duplicateCheck    = helper.duplicate(t,data);
 
     if (count < 50) {
 
-        if (current.transfer_date.includes('-')) {        
+        if (t.date.includes('-')) {        
 
-            if (date > 14 || date <= 0) {
+            if (dateCheck > 60 || dateCheck <= 0) {
 
                 return 'Not relevant';
         
             }
 
-            else if (data) {
+            else if (dataCheck) {
 
                 return 'Incomplete data';
+
+            }
+
+            else if (duplicateCheck === true) {
+
+                return 'Duplicate Entry';
 
             }
 

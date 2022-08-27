@@ -8,81 +8,78 @@ const Team      = require('../server/models/team');
 
 const leagueList = {
 
-    test: {
-
-        id: 524,
-        name: 'Premier League'
-
-    },
-
     eng: {
-        id: 2790,
+        id: 39,
         name: 'Premier League'
     },
 
     ger: {
-        id: 2755,
+        id: 78,
         name: 'Bundesliga'
     },
 
     fra: {
-        id: 2664,
+        id: 61,
         name: 'Ligue 1'
     },
 
     ita: {
-        id: 891,
+        id: 135,
         name: 'Serie A'
     },
 
     spa: {
-        id: 775,
+        id: 140,
         name: 'La Liga'
     },
 
     ned: {
-        id: 2673,
+        id: 88,
         name: 'Eredivisie'
     },
 
     bra: {
-        id: 1396,
+        id: 71,
         name: 'Brasileiro'
     },
 
     por: {
-        id: 2826,
+        id: 94,
         name: 'Primeira Liga'
     },
 
     sco: {
-        id: 2655,
+        id: 180,
         name: 'Scottish Premiership'
     },
 
     usa: {
-        id: 1264,
+        id: 253,
         name: 'MLS'
     },
 
     mex: {
-        id: 2656,
+        id: 262,
         name: 'Liga MX'
+    },
+    arg: {
+        id: 128,
+        name: 'Primera Division'
     }
 
 }
 
 //
 
-const current   = leagueList.mex;
+const current   = leagueList.arg;
 const apiURL    = process.env.API_LIVE;
 
 //
 
 const isDuplicate = (current, teams) => {
 
-    const nameMatch     = teams.filter(a => a.name === current.player_name);
-    const idMatch       = teams.filter(a => a.id === current.team_id);
+    const nameMatch     = teams.filter(a => a.name === current.team.name);
+    const idMatch       = teams.filter(a => a.id === current.team.id);
 
     if (nameMatch.length > 0) {
 
@@ -110,7 +107,7 @@ const isDuplicate = (current, teams) => {
 
 const getTeams = async (league) => {
 
-    const teamData = await fetch(`https://${apiURL}/v2/teams/league/${league}`, {
+    const teamData = await fetch(`https://${apiURL}/v3/teams?league=${league}&season=2022`, {
         "method": "GET",
         "headers": {
             "x-rapidapi-host": apiURL,
@@ -135,7 +132,7 @@ const pullTeams = async () => {
         //
 
         const league = await getTeams(current.id);
-        const result = league.api.teams;
+        const result = league.response;
 
         Promise.all(result.map(t => {
 
@@ -150,27 +147,29 @@ const pullTeams = async () => {
                 if (!conditions) {
 
                     const leagueTeam = {
-
-                        teamID: t.team_id,
-                        name: t.name,
-                        country: t.country,
-                        league: current.name,
-                        logo: t.logo
-        
+                
+                        teamID:     t.team.id,
+                        name:       t.team.name,
+                        code:       t.team.code,
+                        country:    t.team.country,
+                        league:     current.name,
+                        logo:       t.team.logo,
+                        venue:      t.venue.name
+                
                     };
-    
+                
                     teams.push(leagueTeam);
-    
+                
                     await Team.create(leagueTeam).then(result => {
-    
-                        console.log('✔️',` Team added: ${t.name}`);
-            
+                
+                        console.log('✔️',` Team added: ${t.team.name}`);
+                
                     });
-
+                
                 } else {
-
-                    console.log('❌',` Team not eligible: ${t.name} (${conditions})`);
-
+                
+                    console.log('❌',` Team not eligible: ${t.team.name} (${conditions})`);
+                
                 }
 
             })

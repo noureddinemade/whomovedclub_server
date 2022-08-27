@@ -2,99 +2,40 @@
 
 require('dotenv').config();
 
-const mongoose  = require('mongoose');
-const Transfer  = require('../server/models/transfer');
+const mongoose      = require('mongoose');
 
-// Check transfer dates.
+const Transfer      = require('../server/models/transfer');
 
-const daysBetween = function(d1, d2) {
-
-    const result = Math.abs(d1.getTime() - d2.getTime());
-
-    return Math.floor(result / (1000 * 60 * 60 * 24));
-
-};
-
-// Check if transfer is already in there
-
-const isDuplicate = (current, players) => {
-
-    const nameMatch             = players.filter(a => a.name === current.name);
-    const lastLettersMatch      = players.filter(a => a.name.slice(-5) === current.name.slice(-5));
-    const typeMatch             = players.filter(a => a.type === current.type);
-    const teamInMatch           = players.filter(a => a.team.in.name === current.team.in.name);
-    const teamOutMatch          = players.filter(a => a.team.out.name === current.team.out.name);
-    const dateMatch             = players.filter(a => a.transferDate === current.transferDate);
-
-    if (typeMatch.length > 1) {
-
-        if (dateMatch.length > 1) {
-
-            if (teamInMatch.length > 1 && teamOutMatch.length > 1) {
-
-                return true;
-    
-            } else if (nameMatch.length > 1 && lastLettersMatch.length > 1) {
-
-                return true;
-
-            } else {
-
-                return false;
-
-            }
-
-        } else {
-
-            return false;
-
-        }
-
-    } else {
-
-        return false;
-
-    }
-
-}
-
-// Check if transfer passes import requirements
-
-const doesItPass = (current, players) => {
-
-    const d1    = new Date();
-    const d2    = new Date(current.transferDate);
-    const date  = daysBetween(d1, d2);
-
-    if (date > 60) {
-
-        return 'old';
-
-    } else {
-
-        if (isDuplicate(current, players)) {
-
-            return 'duplicate';
-    
-        }
-    
-        else {
-    
-            return false;
-    
-        }
-
-    }
-
-}
+const condition     = require('./functions/conditions');
+const date          = new Date();
 
 //
 
-const cleanTransfers = async () => {
+const isDuplicate = (array, item) => {
 
-    let removePromise   = Promise.resolve();
-    let toBeRemoved     = [];
-    let unique          = [];
+    let c = 0;
+
+    //
+
+    let name = array.filter(x => x.name === item.name);
+    let date = array.filter(x => x.date === item.date);
+    let team = array.filter(x => x.in === item.in);
+    let type = array.filter(x => x.type === item.type);
+
+    name && name.length > 1 ? c = c + 1 : c = c;
+    date && date.length > 1 ? c = c + 1 : c = c;
+    team && team.length > 1 ? c = c + 1 : c = c;
+    type && type.length > 1 ? c = c + 1 : c = c;
+
+    if (c === 4) { return true } else { return false };
+
+}
+
+const removeDuplicates = () => {
+
+    let transfers   = [];
+    let duplicates  = [];
+    let dtPromise   = Promise.resolve();
 
     try {
 
@@ -104,67 +45,39 @@ const cleanTransfers = async () => {
 
                 Promise.all(result.map(t => {
 
-                    removePromise = removePromise.then(() => {
+                    dtPromise = dtPromise.then(() => {
 
                         return t;
 
                     }).then(async t => {
 
-                        const conditions = doesItPass(t, result);
+                        let c = isDuplicate(transfers, t);
 
-                        if (conditions === 'old') {
-                            
-                            toBeRemoved.push(t);
+                        c ? duplicates.push(t) : transfers.push(t);
 
-                        }
-
-                        else if (conditions === 'duplicate') {
-
-                            const date      = unique.filter(a => a.transferDate === t.transferDate);
-                            const type      = unique.filter(a => a.type === t.type);
-                            const teamIn    = unique.filter(a => a.team.in.id === t.team.in.id);
-                            const teamOut   = unique.filter(a => a.team.out.id === t.team.out.id);
-
-                            if (date.length > 0 && type.length > 0 && teamIn.length > 0 && teamOut.length > 0) {
-
-                                toBeRemoved.push(t);
-
-                            } else {
-
-                                unique.push(t);
-
-                            }
-
-                        }
-                        
                     })
 
-                    return removePromise;
+                    return dtPromise;
 
                 })).then(results => {
 
-                    toBeRemoved = toBeRemoved.sort();
+                    if (duplicates.length > 0) {
 
-                    if (toBeRemoved.length > 1) {
-
-                        toBeRemoved.map(t => {
+                        duplicates.forEach(t => {
 
                             Transfer.findByIdAndDelete(t._id)
     
                                 .then(result => console.log('🗑',` Transfer removed: ${t.name}`))
-    
+                                .then(result => mongoose.connection.close())
+
                         })
 
-                    }
+                    } else {
 
-                    setTimeout(() => {
-
-                        console.log('--------------------------------');
-                        console.log('⚽️',` ${toBeRemoved.length}/${result.length} Transfers cleaned`);
-                        console.log('✅',' Disconnected from MongoDB');
+                        console.log('No duplicates found');
                         mongoose.connection.close();
 
-                    }, 5000);
+                    }
 
                 })
 
@@ -193,7 +106,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         console.log('✅', ' Connected to MongoDB');
         console.log('--------------------------------');
 
-        cleanTransfers();
+        removeDuplicates();
 
     })
     .catch((error) => {

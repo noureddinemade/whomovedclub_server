@@ -10,21 +10,21 @@ exports.date = (d1, d2) => {
 
 // Check for data issues
 
-exports.check = (current) => {
+exports.check = (p, t) => {
 
-    if (!current.type || current.type === 'N/A' || current.player_name === 'Data not available') {
-
-        return true;
-
-    }
-
-    else if (!current.team_in.team_name || !current.team_out.team_name) {
+    if (!t.type || t.type === 'N/A' || !p.player.name || p.player.name === 'Data not available') {
 
         return true;
 
     }
 
-    else if (!current.team_in.team_id || !current.team_out.team_id) {
+    else if (!t.teams.in.name || !t.teams.out.name) {
+
+        return true;
+
+    }
+
+    else if (!t.teams.in.id || !t.teams.in.id) {
 
         return true;
 
@@ -35,5 +35,22 @@ exports.check = (current) => {
         return false;
 
     }
+
+}
+
+// Check for duplicates
+
+exports.duplicate = (t,data) => {
+
+    let c1      = data.find(i => i.in === t.teams.out.name);
+    let c2      = data.find(i => i.out === t.teams.in.name);
+    let c3      = data.find(i => i.date === t.date);
+    let result  = 0;
+
+    c1 ? result = result + 1 : result = result;
+    c2 ? result = result + 1 : result = result;
+    c3 ? result = result + 2 : result = result;
+
+    if (result >= 3) { return true } else { return false };
 
 }

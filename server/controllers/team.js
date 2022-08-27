@@ -36,3 +36,19 @@ exports.getTeamsByLeague = (req, res, next) => {
         .catch((error) => next(error));
 
 };
+
+exports.getTeamsByCountry = (req, res, next) => {
+
+    const country = req.params.country;
+
+    Team.find({ country: country })
+
+        .then(results => {
+
+            res.json(results);
+
+        })
+
+        .catch((error) => next(error));
+
+};

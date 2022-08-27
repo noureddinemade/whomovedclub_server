@@ -6,14 +6,11 @@ const mongoose  = require('mongoose');
 
 const transferSchema = new mongoose.Schema({
 
-    name: String,
-    type: String,
-    team: { 
-        in: { id: Number, name: String },
-        out: { id: Number, name: String }
-    },
-    transferDate: String,
-    lastUpdated: Date
+    date:   String,
+    name:   String,
+    type:   String,
+    in:     String,
+    out:    String,
 
 });
 
